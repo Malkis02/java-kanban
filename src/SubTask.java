@@ -15,8 +15,7 @@ class SubTask extends Task {
     }
     @Override
     public String toString() {
-        //       return "Task{" + "name='" + name + '\'' + ", description='" + description + '\'' + ", " + "id=" + id + ", status='" + status + '\'' + '}';
-        String s = super.toString(); // получаем строку состояния от предка(но уже с приставкой Epic)
+        String s = super.toString();
         return String.format("%s master=%s",s,master == null ? "null":master.getName());
     }
 
