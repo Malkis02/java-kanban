@@ -47,8 +47,6 @@ public class Task {
 
     @Override
     public String toString() {
-        //       return "Tasks.Task{" + "name='" + name + '\'' + ", description='" + description + '\''
-        //       + ", " + "id=" + id + ", status='" + status + '\'' + '}';
         return String.format("%s name=%s desc=%s id=%d status=%s", this.getClass()
                 .getSimpleName(), this.name, this.description, this.id, this.getStatus());
     }
