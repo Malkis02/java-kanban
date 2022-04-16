@@ -1,13 +1,10 @@
+package Tasks;
+
 public class Task {
 
     private String name;
     private String description;
     private int id;
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
     private String status;
 
     public Task(String n, String d) {
@@ -24,7 +21,6 @@ public class Task {
         this.name = name;
     }
 
-
     public String getDescription() {
         return description;
     }
@@ -32,7 +28,6 @@ public class Task {
     public void setDescription(String description) {
         this.description = description;
     }
-
 
     public int getId() {
         return id;
@@ -42,16 +37,19 @@ public class Task {
         this.id = id;
     }
 
-
     public String getStatus() {
         return status;
     }
 
-
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     @Override
     public String toString() {
- //       return "Task{" + "name='" + name + '\'' + ", description='" + description + '\'' + ", " + "id=" + id + ", status='" + status + '\'' + '}';
-        return String.format("%s name=%s desc=%s id=%d status=%s",this.getClass().getSimpleName(),this.name,this.description,this.id,this.getStatus());
+        //       return "Tasks.Task{" + "name='" + name + '\'' + ", description='" + description + '\''
+        //       + ", " + "id=" + id + ", status='" + status + '\'' + '}';
+        return String.format("%s name=%s desc=%s id=%d status=%s", this.getClass()
+                .getSimpleName(), this.name, this.description, this.id, this.getStatus());
     }
 }

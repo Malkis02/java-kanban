@@ -1,4 +1,6 @@
-class SubTask extends Task {
+package Tasks;
+
+public class SubTask extends Task {
 
     private Epic master;
 
