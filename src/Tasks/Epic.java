@@ -1,9 +1,26 @@
 package Tasks;
-import manager.Manager;
+import manager.InMemoryTaskManager;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Epic extends Task {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        if (!super.equals(o))
+            return false;
+        Epic epic = (Epic) o;
+        return Objects.equals(subs, epic.subs);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), subs);
+    }
 
     private List<SubTask> subs = new ArrayList<>();
 
@@ -24,27 +41,27 @@ public class Epic extends Task {
     }
 
     @Override
-    public String getStatus() {
+    public TaskStatus getStatus() {
         if (subs.size() == 0) {
-            return Manager.STATUS_NEW_NAME;
+            return TaskStatus.NEW;
         }
         int totalNew = 0;
         int totalProg = 0;
         int totalDone = 0;
         for (int k = 0; k < subs.size(); k++) {
-            if (subs.get(k).getStatus().equals(Manager.STATUS_NEW_NAME))
+            if (subs.get(k).getStatus().equals(TaskStatus.NEW))
                 totalNew++;
-            if (subs.get(k).getStatus().equals(Manager.STATUS_IN_PROGRESS_NAME))
+            if (subs.get(k).getStatus().equals(TaskStatus.IN_PROGRESS))
                 totalProg++;
-            if (subs.get(k).getStatus().equals(Manager.STATUS_DONE_NAME))
+            if (subs.get(k).getStatus().equals(TaskStatus.DONE))
                 totalDone++;
         }
         if (totalNew == subs.size()) {
-            return Manager.STATUS_NEW_NAME;
+            return TaskStatus.NEW;
         } else if (totalDone == subs.size()) {
-            return Manager.STATUS_DONE_NAME;
+            return TaskStatus.DONE;
         } else {
-            return Manager.STATUS_IN_PROGRESS_NAME;
+            return TaskStatus.IN_PROGRESS;
         }
     }
 
