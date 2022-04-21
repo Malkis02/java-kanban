@@ -21,5 +21,5 @@ public interface TaskManager {
     Task getTaskById(int id);
     Epic getEpicById(int id);
     SubTask getSubTaskById(int id);
-    public List<Task> getHistory();
+    List<Task> getHistory();
 }

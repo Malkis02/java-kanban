@@ -10,7 +10,6 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        //InMemoryTaskManager manager = new InMemoryTaskManager();
         TaskManager manager = Managers.getDefault();
         Task task = new Task("Task1", "asdf");
         manager.addTask(task);
@@ -45,6 +44,12 @@ public class Main {
                 manager.getAllTasks(), manager.getAllEpic(), manager.getAllSubtasks());
         List<SubTask> subTaskOfOldEpic = manager.getListOffSubTasksByEpicId(3);
         Epic epic2 = new Epic("epic2", "asdfsv");
+        manager.getSubTaskById(5);
+        manager.getSubTaskById(5);
+        manager.getEpicById(3);
+        manager.getTaskById(2);
+        manager.getEpicById(3);
+        manager.getTaskById(2);
         manager.getSubTaskById(5);
         manager.updateTask(3, epic2);
         System.out.printf("Normal Tasks: %s\nTasks.Epic Tasks: %s\nSub Tasks: %s\n --------\n",

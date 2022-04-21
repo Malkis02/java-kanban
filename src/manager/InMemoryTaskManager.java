@@ -4,13 +4,10 @@ import Tasks.Epic;
 import Tasks.SubTask;
 import Tasks.Task;
 import Tasks.TaskStatus;
-
 import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
 
-   // public static final int HISTORY_CAPACITY = 10;
-    //private LinkedList<Task> history;
     private static int nextId;
     private final HashMap<Integer, Task> tasksById;
     private final HashMap<Integer, SubTask> subtaskById;
@@ -18,7 +15,6 @@ public class InMemoryTaskManager implements TaskManager {
     private final HistoryManager historyManager;
 
     public InMemoryTaskManager() {
-       // history = new LinkedList<>();
         nextId = 1;
         this.tasksById = new HashMap<>();
         this.subtaskById = new HashMap<>();
