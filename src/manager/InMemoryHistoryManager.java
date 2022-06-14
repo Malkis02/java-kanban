@@ -20,6 +20,25 @@ public class InMemoryHistoryManager implements HistoryManager {
             idToNode.remove(id);
         }
     }
+    public static String toString(HistoryManager hm){
+        var his = hm.getHistory();
+        StringBuilder sb = new StringBuilder();
+        for (int k = 0; k < his.size(); k++) {
+            sb.append(his.get(k).getId());
+            if(k<his.size()-1){
+                sb.append(",");
+            }
+        }
+        return sb.toString();
+    }
+    public static List<Integer> fromString(String value){
+        String[] w = value.split(",");
+        var list = new ArrayList<Integer>();
+        for (int i = 0; i < w.length; i++) {
+            list.add(Integer.parseInt(w[i]));
+        }
+        return list;
+    }
 
     @Override
     public void add(Task task) {

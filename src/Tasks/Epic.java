@@ -16,6 +16,8 @@ public class Epic extends Task {
         return Objects.equals(subs, epic.subs);
     }
 
+    static TaskTypeName typeName = TaskTypeName.EPIC;
+
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), subs);
@@ -63,11 +65,19 @@ public class Epic extends Task {
             return TaskStatus.IN_PROGRESS;
         }
     }
+    @Override
+    public String getTypeName(){
+        return typeName.toString();
+    }
 
     @Override
     public String toString() {
         String s = super.toString();
         return String.format("%s subcount=%d", s, subs.size());
     }
-
+    @Override
+    public String toFileString(){
+        String s = super.toFileString();
+        return s;
+    }
 }

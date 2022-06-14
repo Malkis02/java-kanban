@@ -12,11 +12,11 @@ import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
 
-    private static int nextId;
-    private final HashMap<Integer, Task> tasksById;
-    private final HashMap<Integer, SubTask> subtaskById;
-    private final HashMap<Integer, Epic> epicsById;
-    private final HistoryManager historyManager;
+    protected static int nextId;
+    protected final HashMap<Integer, Task> tasksById;
+    protected final HashMap<Integer, SubTask> subtaskById;
+    protected final HashMap<Integer, Epic> epicsById;
+    protected  HistoryManager historyManager;
 
     public InMemoryTaskManager() {
         nextId = 1;
@@ -180,6 +180,11 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public List<Task> getHistory() {
         return historyManager.getHistory();
+    }
+
+    @Override
+    public void setNextId(int nId) {
+        this.nextId = nId;
     }
 
 

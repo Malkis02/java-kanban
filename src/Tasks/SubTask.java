@@ -1,5 +1,7 @@
 package Tasks;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Objects;
 
 public class SubTask extends Task {
@@ -21,9 +23,29 @@ public class SubTask extends Task {
     }
 
     private Epic master;
+    static TaskTypeName typeName = TaskTypeName.SUBTASK;
+    private int masterId;
 
-    public SubTask(String n, String d) {
+    public int getMasterId() {
+        return masterId;
+    }
+
+    public void setMasterId(int masterId) {
+        this.masterId = masterId;
+    }
+
+
+
+    public SubTask(String n, String d, Epic e) {
         super(n, d);
+        if(e!=null){
+            e.addSub(this);
+            master = e;
+        }
+    }
+    @Override
+    public String getTypeName(){
+        return typeName.toString();
     }
 
     public Epic getMaster() {
@@ -37,6 +59,12 @@ public class SubTask extends Task {
     public String toString() {
         String s = super.toString();
         return String.format("%s master=%s",s,master == null ? "null":master.getName());
+    }
+    @Override
+    public String toFileString(){
+        String s = super.toFileString();
+        s+= master.getId();
+        return s;
     }
 
 }

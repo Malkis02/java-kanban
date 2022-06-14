@@ -23,10 +23,11 @@ public class Task {
     private String description;
     private int id;
     private TaskStatus status;
-
+    static TaskTypeName typeName = TaskTypeName.TASK;
     public Task(String n, String d) {
         name = n;
         description = d;
+        status = TaskStatus.NEW;
 
     }
 
@@ -57,6 +58,9 @@ public class Task {
     public TaskStatus getStatus() {
         return status;
     }
+    public String getTypeName(){
+        return typeName.toString();
+    }
 
     public void setStatus(TaskStatus status) {
         this.status = status;
@@ -66,5 +70,8 @@ public class Task {
     public String toString() {
         return String.format("%s name=%s desc=%s id=%d status=%s", this.getClass()
                 .getSimpleName(), this.name, this.description, this.id, this.getStatus());
+    }
+    public String toFileString(){
+        return String.format("%d,%s,%s,%s,%s,",id,getTypeName(),this.name,this.status,this.description);
     }
 }

@@ -35,4 +35,8 @@ public interface TaskManager {
     SubTask getSubTaskById(int id);
 
     List<Task> getHistory();
+
+    void setNextId(int nId);
+
+
 }
