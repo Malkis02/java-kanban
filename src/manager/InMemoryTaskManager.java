@@ -1,14 +1,12 @@
 package manager;
 
-import Tasks.Epic;
-import Tasks.SubTask;
-import Tasks.Task;
-import Tasks.TaskStatus;
+import tasks.Epic;
+import tasks.SubTask;
+import tasks.Task;
+import tasks.TaskStatus;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
 
@@ -17,6 +15,7 @@ public class InMemoryTaskManager implements TaskManager {
     protected final HashMap<Integer, SubTask> subtaskById;
     protected final HashMap<Integer, Epic> epicsById;
     protected  HistoryManager historyManager;
+    protected TreeSet<Task> taskSet;
 
     public InMemoryTaskManager() {
         nextId = 1;
@@ -24,6 +23,7 @@ public class InMemoryTaskManager implements TaskManager {
         this.subtaskById = new HashMap<>();
         this.epicsById = new HashMap<>();
         this.historyManager = Managers.getDefaultHistory();
+        this.taskSet = new TreeSet<>();
     }
 
     @Override
@@ -45,7 +45,9 @@ public class InMemoryTaskManager implements TaskManager {
     public boolean removeById(int id) {
         historyManager.remove(id);
         if (tasksById.containsKey(id)) {
+            var elem = tasksById.get(id);
             tasksById.remove(id);
+            taskSet.remove(elem);
             return true;
         } else if (epicsById.containsKey(id)) {
             Epic ep = epicsById.get(id);
@@ -53,8 +55,10 @@ public class InMemoryTaskManager implements TaskManager {
             for (SubTask sb : children) {
                 historyManager.remove(sb.getId());
                 subtaskById.remove(sb.getId());
+                taskSet.remove(sb);
             }
             epicsById.remove(id);
+            taskSet.remove(ep);
             historyManager.remove(id);
             return true;
         } else if (subtaskById.containsKey(id)) {
@@ -62,6 +66,7 @@ public class InMemoryTaskManager implements TaskManager {
             Epic ep = sb.getMaster();
             List<SubTask> subs = ep.getSubs();
             subs.remove(sb);
+            taskSet.remove(sb);
             if (subs.size() == 0) {
                 ep.setStatus(TaskStatus.NEW);
             }
@@ -73,9 +78,19 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
+    public List<Task> getPrioritizedTasks(){
+        var list = new ArrayList<Task>();
+        for(var t: taskSet){
+            list.add(t);
+        }
+        return list;
+    }
+
+    @Override
     public void removeAllTasks() {
         for (var e : tasksById.entrySet()) {
             historyManager.remove(e.getKey());
+            taskSet.remove(e.getValue());
         }
         tasksById.clear();
     }
@@ -84,6 +99,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void removeAllSubTask() {
         for (var e : subtaskById.entrySet()) {
             historyManager.remove(e.getKey());
+            taskSet.remove(e.getValue());
         }
         Collection<Epic> allEpics = epicsById.values();
         for (Epic epic : allEpics) {
@@ -98,9 +114,11 @@ public class InMemoryTaskManager implements TaskManager {
     public void removeAllEpic() {
         for (var e : epicsById.entrySet()) {
             historyManager.remove(e.getKey());
+            taskSet.remove(e.getValue());
         }
         for (var e : subtaskById.entrySet()) {
             historyManager.remove(e.getKey());
+            taskSet.remove(e.getValue());
         }
         epicsById.clear();
         subtaskById.clear();
@@ -118,6 +136,7 @@ public class InMemoryTaskManager implements TaskManager {
             tasksById.put(nextId, task);
         }
         nextId++;
+        taskSet.add(task);
     }
 
     @Override
@@ -186,6 +205,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void setNextId(int nId) {
         this.nextId = nId;
     }
+
 
 
 }

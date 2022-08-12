@@ -1,6 +1,6 @@
 package manager;
 
-import Tasks.*;
+import tasks.*;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -20,12 +20,12 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         System.out.println(Arrays.toString(w));
         Task t = null;
         if (w[1].equals(TaskTypeName.TASK.toString())) {
-            t = new Task(w[2], w[4]);
+            t = new Task(w[2], w[4],w[5],Integer.parseInt(w[6]));
         } else if (w[1].equals(TaskTypeName.EPIC.toString())) {
             t = new Epic(w[2], w[4]);
         } else if (w[1].equals(TaskTypeName.SUBTASK.toString())) {
-            t = new SubTask(w[2], w[4], null);
-            ((SubTask) t).setMasterId(Integer.parseInt(w[5]));
+            t = new SubTask(w[2], w[4], null,w[5],Integer.parseInt(w[6]));
+            ((SubTask) t).setMasterId(Integer.parseInt(w[7]));
         } else {
             System.out.format("Wrong type name");
             return null;
@@ -80,10 +80,13 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             var list = InMemoryHistoryManager.fromString(hist);
 
             br.close();
+            System.out.println("LoadFromFile");
             for (int k = 0; k < list_e.size(); k++) {
                 for (int j = 0; j < list_st.size(); j++) {
                     var subT = list_st.get(j);
+                    System.out.format("Epic %d ? SubTask %d (%d) \n",list_e.get(k).getId(),subT.getId(),subT.getMasterId());
                     if (subT.getMasterId() == list_e.get(k).getId()) {
+                        System.out.format("Epic %d <-> SubTask %d \n",list_e.get(k).getId(),subT.getId());
                         list_e.get(k).addSub(subT);
                     }
                 }
@@ -122,12 +125,12 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     public static void main(String[] args) {
         TaskManager manager = Managers.getDefault();
 
-        Task task = new Task("Выгулять собаку", "Погулять в парке");
-        Task task2 = new Task("Позвонить маме", "Попросить рецепт торта");
+        Task task = new Task("Выгулять собаку", "Погулять в парке","2022-08-04T20:15",45);
+        Task task2 = new Task("Позвонить маме", "Попросить рецепт торта","2022-08-04T22:10",60);
         Epic epic = new Epic("Закупиться к новому году", "Ничего не забыть");
-        SubTask subTask = new SubTask("Купить продукты", "Закупки", epic);
-        SubTask subTask1 = new SubTask("Купить подарки", "Закупки", epic);
-        SubTask subTask2 = new SubTask("Купить фейерверк", "Закупки", epic);
+        SubTask subTask = new SubTask("Купить продукты", "Закупки", epic,"2022-08-04T20:10",60);
+        SubTask subTask1 = new SubTask("Купить подарки", "Закупки", epic,"2022-08-04T21:10",90);
+        SubTask subTask2 = new SubTask("Купить фейерверк", "Закупки", epic,"2022-08-04T22:10",10);
         Epic epic1 = new Epic("Устроить детский праздник", "Для племянника");
         System.out.println(Arrays.toString(manager.getHistory().toArray()));
         manager.addTask(task);
@@ -166,10 +169,16 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         System.out.println(Arrays.toString(manager.getHistory().toArray()));
         manager.removeById(3);
         System.out.println(Arrays.toString(manager.getHistory().toArray()));
-        var fb = FileBackedTasksManager.loadFromFile(new File("data.csv"));
+
+
+
+
+        var fb = FileBackedTasksManager.loadFromFile
+                (new File("data.csv"));
         fb.save();
         fb.removeById(1);
-        var fbNew = FileBackedTasksManager.loadFromFile(new File("data_next.csv"));
+        var fbNew = FileBackedTasksManager.loadFromFile
+                (new File("data_next.csv"));
         fbNew.save();
     }
 
@@ -182,6 +191,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     public void save() {
+        System.out.println("Save");
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(String.format("%s", fileName)));
             bw.write("id,type,name,status,description,epic\n");
@@ -207,6 +217,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     @Override
     public void addTask(Task task) {
+        System.out.println("Add");
         if (!restored) {
             super.addTask(task);
             save();

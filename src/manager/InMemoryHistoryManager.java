@@ -1,6 +1,6 @@
 package manager;
 
-import Tasks.Task;
+import tasks.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,6 +32,10 @@ public class InMemoryHistoryManager implements HistoryManager {
         return sb.toString();
     }
     public static List<Integer> fromString(String value){
+        System.out.println("Parse: " + value);
+        if(value==null){
+            return new ArrayList<>();
+        }
         String[] w = value.split(",");
         var list = new ArrayList<Integer>();
         for (int i = 0; i < w.length; i++) {

@@ -1,9 +1,12 @@
-package tasks;
+package test;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import manager.InMemoryTaskManager;
 import org.junit.jupiter.api.Test;
+import tasks.Epic;
+import tasks.SubTask;
+import tasks.TaskStatus;
 
 class EpicTestInMemory {
     @Test

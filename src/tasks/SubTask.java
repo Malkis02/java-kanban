@@ -1,6 +1,4 @@
-package Tasks;
-
-import org.jetbrains.annotations.NotNull;
+package tasks;
 
 import java.util.Objects;
 
@@ -36,8 +34,8 @@ public class SubTask extends Task {
 
 
 
-    public SubTask(String n, String d, Epic e) {
-        super(n, d);
+    public SubTask(String n, String d, Epic e,String startdt,int durmin) {
+        super(n, d,startdt,durmin);
         if(e!=null){
             e.addSub(this);
             master = e;
@@ -63,6 +61,8 @@ public class SubTask extends Task {
     @Override
     public String toFileString(){
         String s = super.toFileString();
+        s+=",";
+        System.out.println(this.getName() + ": " + master);
         s+= master.getId();
         return s;
     }

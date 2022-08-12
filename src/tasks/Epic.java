@@ -1,9 +1,20 @@
-package Tasks;
+package tasks;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class Epic extends Task {
+    private LocalDateTime endTime;
+
+    @Override
+    public LocalDateTime getEndTime() {
+        if(endTime==null){
+            return super.getEndTime();
+        }
+        return endTime;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -26,12 +37,28 @@ public class Epic extends Task {
     private List<SubTask> subs = new ArrayList<>();
 
     public Epic(String n, String d) {
-        super(n, d);
+        super(n, d,null,0);
     }
+
 
     public void addSub(SubTask sb) {
         if (sb == null || subs.contains(sb)) {
             return;
+        }
+        System.out.println("ADD sub");
+        if(subs.size()==0){
+            startTime = sb.getStartTime();
+            endTime = sb.getEndTime();
+            duration = sb.duration;
+        }
+        else{
+            if(sb.startTime.isBefore(startTime)){
+                startTime = sb.startTime;
+            }
+            if(sb.getEndTime().isAfter(endTime)){
+                endTime = sb.getEndTime();
+            }
+            duration+= sb.duration;
         }
         subs.add(sb);
         sb.setMaster(this);
