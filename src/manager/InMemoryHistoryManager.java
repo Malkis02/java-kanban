@@ -32,7 +32,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         return sb.toString();
     }
     public static List<Integer> fromString(String value){
-        System.out.println("Parse: " + value);
         if(value==null){
             return new ArrayList<>();
         }

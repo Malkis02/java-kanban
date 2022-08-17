@@ -140,9 +140,9 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public boolean updateTask(int curId, Task task) {
+    public boolean updateTask(int curId,int nId, Task task) {
         if (removeById(curId)) {
-            task.setId(curId);
+            task.setId(nId);
             task.setStatus(TaskStatus.NEW);
             if (task instanceof SubTask) {
                 subtaskById.put(nextId, (SubTask) task);

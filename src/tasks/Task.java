@@ -1,6 +1,5 @@
 package tasks;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -52,7 +51,6 @@ public class Task implements Comparable {
         name = n;
         description = d;
         status = TaskStatus.NEW;
-        //DateTimeFormatter f = DateTimeFormatter.ofPattern("MMM d yyyy hh:mm");
         if(startdt!=null) {
             startTime = LocalDateTime.parse(startdt);
         }
@@ -122,7 +120,7 @@ public class Task implements Comparable {
     }
 
     @Override
-    public int compareTo(@NotNull Object o) {
+    public int compareTo( Object o) {
         Task t = (Task)o;
         if(t.startTime==null && this.startTime==null){
             return 0;

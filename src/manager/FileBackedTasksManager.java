@@ -78,9 +78,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             var hist = br.readLine();
             result.historyManager = new InMemoryHistoryManager();
             var list = InMemoryHistoryManager.fromString(hist);
-
             br.close();
-            System.out.println("LoadFromFile");
             for (int k = 0; k < list_e.size(); k++) {
                 for (int j = 0; j < list_st.size(); j++) {
                     var subT = list_st.get(j);
@@ -114,7 +112,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 }
             }
             result.setRestored(false);
-            System.out.format("Reloaded %d\n", list_e.size() + list_st.size() + list_t.size());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -191,7 +188,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     public void save() {
-        System.out.println("Save");
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(String.format("%s", fileName)));
             bw.write("id,type,name,status,description,epic\n");
@@ -217,7 +213,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     @Override
     public void addTask(Task task) {
-        System.out.println("Add");
         if (!restored) {
             super.addTask(task);
             save();

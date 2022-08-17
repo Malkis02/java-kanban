@@ -45,7 +45,6 @@ public class Epic extends Task {
         if (sb == null || subs.contains(sb)) {
             return;
         }
-        System.out.println("ADD sub");
         if(subs.size()==0){
             startTime = sb.getStartTime();
             endTime = sb.getEndTime();
