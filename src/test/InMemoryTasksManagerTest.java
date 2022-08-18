@@ -133,11 +133,12 @@ public class InMemoryTasksManagerTest extends TaskManagerTest {
         SubTask subTask = new SubTask("Купить продукты", "Закупки", epic,"2022-08-04T20:10",60);
         SubTask subTask1 = new SubTask("Купить подарки", "Закупки", epic,"2022-08-04T21:10",90);
         Task task = new Task("Закупиться к новому году","Ничего не забыть","2022-08-07T23:12",60);
+        Task task2 = new Task("Позвонить маме", "Попросить рецепт торта","2022-08-04T22:10",60);
         manager.addTask(subTask);
         manager.addTask(subTask1);
         manager.addTask(epic);
         manager.addTask(task);
-        manager.updateTask(4,5,task);
+        manager.updateTask(4,task);
         System.out.println(manager.getTaskById(5));
         assertNull(manager.getTaskById(4));
         assertNotNull(manager.getTaskById(5));
@@ -155,8 +156,8 @@ public class InMemoryTasksManagerTest extends TaskManagerTest {
         manager.removeAllSubTask();
         manager.removeAllTasks();
         manager.removeAllEpic();
-        manager.updateTask(4,5,task);
-        assertNull(manager.getTaskById(5));
+        manager.updateTask(4,task);
+        assertNull(manager.getTaskById(4));
     }
 
     @Test
@@ -165,8 +166,12 @@ public class InMemoryTasksManagerTest extends TaskManagerTest {
         SubTask subTask = new SubTask("Купить продукты", "Закупки", epic,"2022-08-04T20:10",60);
         SubTask subTask1 = new SubTask("Купить подарки", "Закупки", epic,"2022-08-04T21:10",90);
         Task task = new Task("Закупиться к новому году","Ничего не забыть","2022-08-07T23:12",60);
-        manager.updateTask(5,6,task);
-        assertNull(manager.getTaskById(6));
+        manager.addTask(epic);
+        manager.addTask(subTask);
+        manager.addTask(subTask1);
+        manager.addTask(task);
+        manager.updateTask(5,task);
+        assertNotNull(manager.getTaskById(4));
     }
     @Test
     void getListOffSubTasksByEpicIdTest(){
