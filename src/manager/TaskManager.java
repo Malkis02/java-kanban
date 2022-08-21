@@ -26,7 +26,7 @@ public interface TaskManager {
 
     boolean updateTask(int curId, Task task);
 
-    List<SubTask> getListOffSubTasksByEpicId(int id);
+    List<SubTask> getListOfSubTasksByEpicId(int id);
 
     Task getTaskById(int id);
 

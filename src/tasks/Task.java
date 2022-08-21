@@ -132,7 +132,7 @@ public class Task implements Comparable {
             return -1;
         }
         if(startTime.isBefore(t.startTime)){
-            return - 1;
+            return  -1;
         }
         else if(startTime.isAfter(t.startTime)){
             return 1;

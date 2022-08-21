@@ -84,14 +84,22 @@ public class InMemoryHistoryManager implements HistoryManager {
         if (q == null) {
             return;
         }
-        if (q.next == null) {
-            head = tail = null;
-        } else if (q == head) {
-            head.next.prev = null;
-            head = head.next;
+        if (q == head) {
+            if(head.next!=null){
+                head.next.prev = null;
+                head = head.next;
+            }else{
+                head = null;
+                tail = null;
+            }
         } else if (q == tail) {
-            tail.prev.next = null;
-            tail = tail.prev;
+            if(tail.prev!=null){
+                tail.prev.next = null;
+                tail = tail.prev;
+            }else{
+                head = null;
+                tail = null;
+            }
         } else {
             q.prev.next = q.next;
             q.next.prev = q.prev;

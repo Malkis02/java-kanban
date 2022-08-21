@@ -41,11 +41,30 @@ public class Epic extends Task {
     }
 
 
+    private void calculateDuration(){
+        startTime = null;
+        endTime = null;
+        duration = 0;
+        for(int i = 0;i<subs.size();i++){
+            if(startTime==null || subs.get(i).startTime.isBefore(startTime)){
+                startTime = subs.get(i).startTime;
+            }
+            if(endTime==null || subs.get(i).getEndTime().isAfter(endTime)){
+                endTime = subs.get(i).getEndTime();
+            }
+            duration+= subs.get(i).duration;
+        }
+    }
     public void addSub(SubTask sb) {
         if (sb == null || subs.contains(sb)) {
             return;
         }
-        if(subs.size()==0){
+        if(sb.getMaster()!=null){
+           var oldMaster = sb.getMaster();
+           oldMaster.subs.remove(sb);
+           oldMaster.calculateDuration();
+        }
+      /*  if(subs.size()==0){
             startTime = sb.getStartTime();
             endTime = sb.getEndTime();
             duration = sb.duration;
@@ -59,8 +78,11 @@ public class Epic extends Task {
             }
             duration+= sb.duration;
         }
+
+       */
         subs.add(sb);
         sb.setMaster(this);
+        calculateDuration();
     }
 
     public List<SubTask> getSubs() {

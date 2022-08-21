@@ -80,9 +80,16 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public List<Task> getPrioritizedTasks(){
         var list = new ArrayList<Task>();
-        for(var t: taskSet){
-            list.add(t);
+        for(var t: tasksById.entrySet()){
+            list.add(t.getValue());
         }
+        for(var t: epicsById.entrySet()){
+            list.add(t.getValue());
+        }
+        for(var t: subtaskById.entrySet()){
+            list.add(t.getValue());
+        }
+        Collections.sort(list);
         return list;
     }
 
@@ -136,7 +143,7 @@ public class InMemoryTaskManager implements TaskManager {
             tasksById.put(nextId, task);
         }
         nextId++;
-        taskSet.add(task);
+
     }
 
     @Override
@@ -157,16 +164,15 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public List<SubTask> getListOffSubTasksByEpicId(int id) {
+    public List<SubTask> getListOfSubTasksByEpicId(int id) {
+        ArrayList<SubTask> copyList = new ArrayList<>();
         if (epicsById.containsKey(id)) {
             List<SubTask> origList = epicsById.get(id).getSubs();
-            ArrayList<SubTask> copyList = new ArrayList<>();
             for (int k = 0; k < origList.size(); k++) {
                 copyList.add(origList.get(k));
             }
-            return copyList;
         }
-        return null;
+        return copyList;
     }
 
     @Override
