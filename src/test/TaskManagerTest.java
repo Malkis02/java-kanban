@@ -1,9 +1,6 @@
-package test;
-
 import manager.HistoryManager;
 import manager.Managers;
 import manager.TaskManager;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tasks.Epic;
 import tasks.SubTask;
@@ -20,17 +17,16 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     protected Epic epic;
     protected Task task;
     protected SubTask subTask;
-    protected Task task2;
     private SubTask subTask1;
 
 
     protected void setUpTaskManager() {
         historyManager = Managers.getDefaultHistory();
-        task = new Task("Выгулять собаку", "Погулять в парке","2022-08-05T20:15",45);
+        task = new Task("Выгулять собаку", "Погулять в парке", "2022-08-05T20:15", 45);
         manager.addTask(task);
         epic = new Epic("Закупиться к новому году", "Ничего не забыть");
         manager.addTask(epic);
-        subTask = new SubTask("Купить продукты", "Закупки", epic,"2022-08-04T20:10",60);
+        subTask = new SubTask("Купить продукты", "Закупки", epic, "2022-08-04T20:10", 60);
         manager.addTask(subTask);
         subTask1 = new SubTask("Купить подарки", "Закупки", epic, "2022-08-04T21:10", 90);
         manager.addTask(subTask1);
@@ -39,57 +35,61 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void getAllTasks() {
         List<Task> listOfTasks = manager.getAllTasks();
-        assertEquals(1,listOfTasks.size());
-        assertEquals(task,listOfTasks.get(0));
+        assertEquals(1, listOfTasks.size());
+        assertEquals(task, listOfTasks.get(0));
 
     }
 
     @Test
     void getAllSubtasks() {
         List<SubTask> listOfSubTasks = manager.getAllSubtasks();
-        assertEquals(2,listOfSubTasks.size());
-        assertEquals(subTask,listOfSubTasks.get(0));
-        assertEquals(subTask1,listOfSubTasks.get(1));
-        assertEquals(subTask.getMaster(),epic);
-        assertEquals(subTask1.getMaster(),epic);
+        assertEquals(2, listOfSubTasks.size());
+        assertEquals(subTask, listOfSubTasks.get(0));
+        assertEquals(subTask1, listOfSubTasks.get(1));
+        assertEquals(subTask.getMaster(), epic);
+        assertEquals(subTask1.getMaster(), epic);
     }
 
     @Test
     void getAllEpic() {
         List<Epic> listOfEpic = manager.getAllEpic();
-        assertEquals(1,listOfEpic.size());
-        assertEquals(epic,listOfEpic.get(0));
+        assertEquals(1, listOfEpic.size());
+        assertEquals(epic, listOfEpic.get(0));
         assertEquals(epic.getStatus(), TaskStatus.NEW);
-    }
-    @Test
-    void getAllEpicWithEmptySubs(){
-        manager.removeAllSubTask();
-        assertEquals(epic.getStatus(),TaskStatus.NEW);
-    }
-    @Test
-    void getAllEpicWithOnlyNewSubs(){
-        subTask.setStatus(TaskStatus.NEW);
-        subTask1.setStatus(TaskStatus.NEW);
-        assertEquals(epic.getStatus(),TaskStatus.NEW);
     }
 
     @Test
-    void getAllEpicWithOnlyDoneSubs(){
+    void getAllEpicWithEmptySubs() {
+        manager.removeAllSubTask();
+        assertEquals(epic.getStatus(), TaskStatus.NEW);
+    }
+
+    @Test
+    void getAllEpicWithOnlyNewSubs() {
+        subTask.setStatus(TaskStatus.NEW);
+        subTask1.setStatus(TaskStatus.NEW);
+        assertEquals(epic.getStatus(), TaskStatus.NEW);
+    }
+
+    @Test
+    void getAllEpicWithOnlyDoneSubs() {
         subTask.setStatus(TaskStatus.DONE);
         subTask1.setStatus(TaskStatus.DONE);
-        assertEquals(epic.getStatus(),TaskStatus.DONE);
+        assertEquals(epic.getStatus(), TaskStatus.DONE);
     }
+
     @Test
-    void getAllEpicWithNewAndDoneSubs(){
+    void getAllEpicWithNewAndDoneSubs() {
         subTask.setStatus(TaskStatus.NEW);
         subTask1.setStatus(TaskStatus.DONE);
-        assertEquals(epic.getStatus(),TaskStatus.IN_PROGRESS);
+        assertEquals(epic.getStatus(), TaskStatus.IN_PROGRESS);
     }
+
     @Test
-    void getAllEpicWithInProgressSubsTest(){
+    void getAllEpicWithInProgressSubsTest() {
         subTask.setStatus(TaskStatus.IN_PROGRESS);
         subTask1.setStatus(TaskStatus.IN_PROGRESS);
-        assertEquals(epic.getStatus(),TaskStatus.IN_PROGRESS);
+        assertEquals(epic.getStatus(), TaskStatus.IN_PROGRESS);
     }
 
     @Test
@@ -103,12 +103,14 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertNull(manager.getSubTaskById(3));
         assertNull(manager.getTaskById(4));
     }
+
     @Test
-    void removeByIdWithWrongId(){
+    void removeByIdWithWrongId() {
         assertFalse(manager.removeById(9));
     }
+
     @Test
-    void removeByIdWithEmptyList(){
+    void removeByIdWithEmptyList() {
         manager.removeAllEpic();
         manager.removeAllTasks();
         manager.removeAllSubTask();
@@ -119,7 +121,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     void removeAllTasks() {
         manager.removeAllTasks();
         List<Task> listOfTasks = manager.getAllTasks();
-        assertEquals(0,listOfTasks.size());
+        assertEquals(0, listOfTasks.size());
     }
 
     @Test
@@ -127,8 +129,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         manager.removeAllSubTask();
         List<SubTask> listOfSubTasks = manager.getAllSubtasks();
         List<Epic> listOfEpic = manager.getAllEpic();
-        assertEquals(0,listOfSubTasks.size());
-        assertEquals(1,listOfEpic.size());
+        assertEquals(0, listOfSubTasks.size());
+        assertEquals(1, listOfEpic.size());
         assertNotNull(subTask.getMaster());
     }
 
@@ -137,15 +139,15 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         manager.removeAllEpic();
         List<SubTask> listOfSubTasks = manager.getAllSubtasks();
         List<Epic> listOfEpic = manager.getAllEpic();
-        assertEquals(0,listOfSubTasks.size());
-        assertEquals(0,listOfEpic.size());
+        assertEquals(0, listOfSubTasks.size());
+        assertEquals(0, listOfEpic.size());
 
     }
 
     @Test
     void addTask() {
         final int taskId = task.getId();
-         Task savedTask = manager.getTaskById(taskId);
+        Task savedTask = manager.getTaskById(taskId);
         assertNotNull(savedTask);
         assertEquals(task, savedTask);
         final List<Task> tasks = manager.getAllTasks();
@@ -156,56 +158,62 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void updateTask() {
-        manager.updateTask(1,task);
+        manager.updateTask(1, task);
         assertNull(manager.getTaskById(1));
         assertNotNull(manager.getTaskById(5));
-        assertEquals(task,manager.getTaskById(5));
+        assertEquals(task, manager.getTaskById(5));
     }
+
     @Test
-    void updateTaskByWrongId(){
-        manager.updateTask(6,task);
+    void updateTaskByWrongId() {
+        manager.updateTask(6, task);
         assertNotNull(manager.getTaskById(1));
-        assertEquals(task,manager.getTaskById(1));
+        assertEquals(task, manager.getTaskById(1));
     }
+
     @Test
-    void updateTaskByEmptyList(){
+    void updateTaskByEmptyList() {
         manager.removeAllSubTask();
         manager.removeAllTasks();
         manager.removeAllEpic();
-        manager.updateTask(1,task);
+        manager.updateTask(1, task);
         assertNull(manager.getTaskById(4));
     }
 
     @Test
     void getListOfSubTasksByEpicId() {
         final List<SubTask> subTasks = manager.getListOfSubTasksByEpicId(2);
-        assertEquals(subTasks.size(),2);
+        assertEquals(subTasks.size(), 2);
     }
+
     @Test
-    void getListOfSubTasksByEpicIdWithWrongId(){
+    void getListOfSubTasksByEpicIdWithWrongId() {
         final List<SubTask> subTasks = manager.getListOfSubTasksByEpicId(3);
-        assertEquals(0,subTasks.size());
+        assertEquals(0, subTasks.size());
     }
+
     @Test
-    void getListOfSubTasksByEpicIdTestWithEmptyList(){
+    void getListOfSubTasksByEpicIdTestWithEmptyList() {
         manager.removeAllEpic();
         manager.removeAllTasks();
         manager.removeAllSubTask();
         final List<SubTask> subTasks = manager.getListOfSubTasksByEpicId(2);
-        assertEquals(0,subTasks.size());
+        assertEquals(0, subTasks.size());
     }
 
     @Test
     void getTaskById() {
         assertNotNull(manager.getTaskById(1));
-        assertEquals(task,manager.getTaskById(1));
+        assertEquals(task, manager.getTaskById(1));
     }
+
     @Test
-    void getTaskByIdWithWrongId(){
+    void getTaskByIdWithWrongId() {
         assertNull(manager.getTaskById(5));
     }
+
     @Test
-    void getTaskByIdWithEmptyList(){
+    void getTaskByIdWithEmptyList() {
         manager.removeAllEpic();
         manager.removeAllSubTask();
         manager.removeAllTasks();
@@ -215,14 +223,16 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void getEpicById() {
         assertNotNull(manager.getEpicById(2));
-        assertEquals(epic,manager.getEpicById(2));
+        assertEquals(epic, manager.getEpicById(2));
     }
+
     @Test
-    void getEpicByIdWithWrongId(){
+    void getEpicByIdWithWrongId() {
         assertNull(manager.getEpicById(5));
     }
+
     @Test
-    void getEpicByIdWithEmptyList(){
+    void getEpicByIdWithEmptyList() {
         manager.removeAllEpic();
         manager.removeAllSubTask();
         manager.removeAllTasks();
@@ -232,15 +242,17 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void getSubTaskById() {
         assertNotNull(manager.getSubTaskById(3));
-        assertEquals(subTask,manager.getSubTaskById(3));
-        assertEquals(epic,subTask.getMaster());
+        assertEquals(subTask, manager.getSubTaskById(3));
+        assertEquals(epic, subTask.getMaster());
     }
+
     @Test
-    void getSubTaskByIdWithWrongId(){
+    void getSubTaskByIdWithWrongId() {
         assertNull(manager.getSubTaskById(5));
     }
+
     @Test
-    void getSubTaskByIdWithEmptyList(){
+    void getSubTaskByIdWithEmptyList() {
         manager.removeAllEpic();
         manager.removeAllSubTask();
         manager.removeAllTasks();
@@ -253,27 +265,29 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         final List<Task> history = historyManager.getHistory();
         assertNotNull(history);
         assertEquals(1, history.size());
-        assertEquals(task,history.get(0));
+        assertEquals(task, history.get(0));
     }
 
 
     @Test
     void getPrioritizedTasksTest() {
-      var list = manager.getPrioritizedTasks();
+        var list = manager.getPrioritizedTasks();
         System.out.println(list);
-      for(int k =0;k<list.size();k++){
-          if(k==list.size()-1){
-              break;
-          }
-          if(list.get(k).getStartTime()==null && list.get(k+1).getStartTime()!=null){
-              assertTrue(false);
-          }else if(list.get(k).getStartTime()!=null && list.get(k+1).getStartTime()!=null && list.get(k).getStartTime().isAfter(list.get(k+1).getStartTime())){
-              System.out.format("[%d] \n ",list.get(k).compareTo(list.get(k+1)));
-              System.out.println(k);
-              assertTrue(false);
-          }
-      }
-      assertTrue(true);
+        for (int k = 0; k < list.size(); k++) {
+            if (k == list.size() - 1) {
+                break;
+            }
+            if (list.get(k).getStartTime() == null && list.get(k + 1).getStartTime() != null) {
+                assertTrue(false);
+            } else if (list.get(k).getStartTime() != null && list.get(k + 1)
+                    .getStartTime() != null && list.get(k).getStartTime()
+                    .isAfter(list.get(k + 1).getStartTime())) {
+                System.out.format("[%d] \n ", list.get(k).compareTo(list.get(k + 1)));
+                System.out.println(k);
+                assertTrue(false);
+            }
+        }
+        assertTrue(true);
     }
 
 }
