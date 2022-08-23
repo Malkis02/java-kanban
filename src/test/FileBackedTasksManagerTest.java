@@ -1,3 +1,5 @@
+package test;
+
 import manager.FileBackedTasksManager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,16 +16,16 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
 
 
     @BeforeEach
-    void setUp() {
+    private void setUp() {
         String file;
-        file = "test\\data.csv";
+        file = "src\\test\\data.csv";
         manager = new FileBackedTasksManager(file);
         setUpTaskManager();
     }
 
     @Test
-    void loadFromFileTest() {
-        var file1 = new File("test\\testdata.csv");
+    private void loadFromFileTest() {
+        var file1 = new File("src\\test\\testdata.csv");
         manager.getTaskById(task.getId());
         FileBackedTasksManager manager = FileBackedTasksManager.loadFromFile(file1);
         List<Task> taskList = manager.getAllTasks();

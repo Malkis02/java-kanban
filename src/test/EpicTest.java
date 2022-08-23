@@ -1,3 +1,5 @@
+package test;
+
 import manager.InMemoryTaskManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +20,7 @@ class EpicTest {
     private SubTask subTask2;
 
     @BeforeEach
-    void setUp() {
+    private void setUp() {
         memory = new InMemoryTaskManager();
         epic = new Epic("Закупиться к новому году", "Ничего не забыть");
         epic1 = new Epic("Устроить детский праздник", "Для племянника");
@@ -29,13 +31,13 @@ class EpicTest {
 
 
     @Test
-    void getStatusEpicEmptySubsTest() {
+    private void getStatusEpicEmptySubsTest() {
         memory.addTask(epic);
         assertSame(epic.getStatus(), TaskStatus.NEW);
     }
 
     @Test
-    void getStatusEpicWithOnlyNewSubsTest() {
+    private void getStatusEpicWithOnlyNewSubsTest() {
         memory.addTask(subTask);
         memory.addTask(subTask1);
         memory.addTask(epic);
@@ -43,7 +45,7 @@ class EpicTest {
     }
 
     @Test
-    void getStatusEpicWithOnlyDoneTest() {
+    private void getStatusEpicWithOnlyDoneTest() {
         Epic epic = new Epic("Закупиться к новому году", "Ничего не забыть");
         SubTask subTask = new SubTask("Купить продукты", "Закупки", epic, "2022-08-04T20:10", 60);
         SubTask subTask1 = new SubTask("Купить подарки", "Закупки", epic, "2022-08-04T21:10", 90);
@@ -57,7 +59,7 @@ class EpicTest {
     }
 
     @Test
-    void getStatusEpicWithNewAndDoneTest() {
+    private void getStatusEpicWithNewAndDoneTest() {
         memory.addTask(subTask);
         memory.addTask(subTask1);
         subTask.setStatus(TaskStatus.NEW);
@@ -67,7 +69,7 @@ class EpicTest {
     }
 
     @Test
-    void getStatusEpicWithInProgressSubsTest() {
+    private void getStatusEpicWithInProgressSubsTest() {
         memory.addTask(subTask);
         memory.addTask(subTask1);
         subTask.setStatus(TaskStatus.IN_PROGRESS);
@@ -77,7 +79,7 @@ class EpicTest {
     }
 
     @Test
-    void addSubTest() {
+    private void addSubTest() {
         memory.addTask(epic);
         memory.addTask(epic1);
         memory.addTask(subTask);
@@ -93,7 +95,7 @@ class EpicTest {
     }
 
     @Test
-    void addSubWithWrongIdTest() {
+    private void addSubWithWrongIdTest() {
         memory.addTask(epic);
         memory.addTask(epic1);
         memory.addTask(subTask);

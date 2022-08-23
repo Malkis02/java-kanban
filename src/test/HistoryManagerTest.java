@@ -1,3 +1,5 @@
+package test;
+
 import manager.HistoryManager;
 import manager.Managers;
 import manager.TaskManager;
@@ -20,7 +22,7 @@ class HistoryManagerTest {
 
 
     @BeforeEach
-    void setUp() {
+    private void setUp() {
         historyManager = Managers.getDefaultHistory();
         manager = Managers.getDefault();
         epic = new Epic("Закупиться к новому году", "Ничего не забыть");
@@ -29,7 +31,7 @@ class HistoryManagerTest {
     }
 
     @Test
-    void add() {
+    private void add() {
         historyManager.add(task);
         final List<Task> history = historyManager.getHistory();
         assertNotNull(history);
@@ -37,7 +39,7 @@ class HistoryManagerTest {
     }
 
     @Test
-    void addTwice() {
+    private void addTwice() {
         historyManager.add(task);
         historyManager.add(task);
         final List<Task> history = historyManager.getHistory();
@@ -46,7 +48,7 @@ class HistoryManagerTest {
     }
 
     @Test
-    void removeFirst() {
+    private void removeFirst() {
         manager.addTask(epic);
         manager.addTask(task);
         manager.addTask(subTask);
@@ -65,7 +67,7 @@ class HistoryManagerTest {
     }
 
     @Test
-    void removeMiddle() {
+    private void removeMiddle() {
         manager.addTask(epic);
         manager.addTask(task);
         manager.addTask(subTask);
@@ -84,7 +86,7 @@ class HistoryManagerTest {
     }
 
     @Test
-    void removeLast() {
+    private void removeLast() {
         manager.addTask(epic);
         manager.addTask(task);
         manager.addTask(subTask);
@@ -103,7 +105,7 @@ class HistoryManagerTest {
     }
 
     @Test
-    void removeOnce() {
+    private void removeOnce() {
         manager.addTask(epic);
         historyManager.add(epic);
         List<Task> history = historyManager.getHistory();
@@ -116,7 +118,7 @@ class HistoryManagerTest {
     }
 
     @Test
-    void getHistory() {
+    private void getHistory() {
         final List<Task> history = historyManager.getHistory();
         assertNotNull(history);
         assertTrue(history.isEmpty());

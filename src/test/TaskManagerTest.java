@@ -1,3 +1,5 @@
+package test;
+
 import manager.HistoryManager;
 import manager.Managers;
 import manager.TaskManager;
@@ -33,7 +35,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void getAllTasks() {
+    protected void getAllTasks() {
         List<Task> listOfTasks = manager.getAllTasks();
         assertEquals(1, listOfTasks.size());
         assertEquals(task, listOfTasks.get(0));
@@ -41,7 +43,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void getAllSubtasks() {
+    protected void getAllSubtasks() {
         List<SubTask> listOfSubTasks = manager.getAllSubtasks();
         assertEquals(2, listOfSubTasks.size());
         assertEquals(subTask, listOfSubTasks.get(0));
@@ -51,7 +53,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void getAllEpic() {
+    protected void getAllEpic() {
         List<Epic> listOfEpic = manager.getAllEpic();
         assertEquals(1, listOfEpic.size());
         assertEquals(epic, listOfEpic.get(0));
@@ -59,41 +61,41 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void getAllEpicWithEmptySubs() {
+    protected void getAllEpicWithEmptySubs() {
         manager.removeAllSubTask();
         assertEquals(epic.getStatus(), TaskStatus.NEW);
     }
 
     @Test
-    void getAllEpicWithOnlyNewSubs() {
+    protected void getAllEpicWithOnlyNewSubs() {
         subTask.setStatus(TaskStatus.NEW);
         subTask1.setStatus(TaskStatus.NEW);
         assertEquals(epic.getStatus(), TaskStatus.NEW);
     }
 
     @Test
-    void getAllEpicWithOnlyDoneSubs() {
+    protected void getAllEpicWithOnlyDoneSubs() {
         subTask.setStatus(TaskStatus.DONE);
         subTask1.setStatus(TaskStatus.DONE);
         assertEquals(epic.getStatus(), TaskStatus.DONE);
     }
 
     @Test
-    void getAllEpicWithNewAndDoneSubs() {
+    protected void getAllEpicWithNewAndDoneSubs() {
         subTask.setStatus(TaskStatus.NEW);
         subTask1.setStatus(TaskStatus.DONE);
         assertEquals(epic.getStatus(), TaskStatus.IN_PROGRESS);
     }
 
     @Test
-    void getAllEpicWithInProgressSubsTest() {
+    protected void getAllEpicWithInProgressSubsTest() {
         subTask.setStatus(TaskStatus.IN_PROGRESS);
         subTask1.setStatus(TaskStatus.IN_PROGRESS);
         assertEquals(epic.getStatus(), TaskStatus.IN_PROGRESS);
     }
 
     @Test
-    void removeById() {
+    protected void removeById() {
         manager.removeById(1);
         manager.removeById(2);
         manager.removeById(3);
@@ -105,12 +107,12 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void removeByIdWithWrongId() {
+    protected void removeByIdWithWrongId() {
         assertFalse(manager.removeById(9));
     }
 
     @Test
-    void removeByIdWithEmptyList() {
+    protected void removeByIdWithEmptyList() {
         manager.removeAllEpic();
         manager.removeAllTasks();
         manager.removeAllSubTask();
@@ -118,14 +120,14 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void removeAllTasks() {
+    protected void removeAllTasks() {
         manager.removeAllTasks();
         List<Task> listOfTasks = manager.getAllTasks();
         assertEquals(0, listOfTasks.size());
     }
 
     @Test
-    void removeAllSubTask() {
+    protected void removeAllSubTask() {
         manager.removeAllSubTask();
         List<SubTask> listOfSubTasks = manager.getAllSubtasks();
         List<Epic> listOfEpic = manager.getAllEpic();
@@ -135,7 +137,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void removeAllEpic() {
+    protected void removeAllEpic() {
         manager.removeAllEpic();
         List<SubTask> listOfSubTasks = manager.getAllSubtasks();
         List<Epic> listOfEpic = manager.getAllEpic();
@@ -145,7 +147,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void addTask() {
+    protected void addTask() {
         final int taskId = task.getId();
         Task savedTask = manager.getTaskById(taskId);
         assertNotNull(savedTask);
@@ -157,7 +159,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void updateTask() {
+    protected void updateTask() {
         manager.updateTask(1, task);
         assertNull(manager.getTaskById(1));
         assertNotNull(manager.getTaskById(5));
@@ -165,14 +167,14 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void updateTaskByWrongId() {
+    protected void updateTaskByWrongId() {
         manager.updateTask(6, task);
         assertNotNull(manager.getTaskById(1));
         assertEquals(task, manager.getTaskById(1));
     }
 
     @Test
-    void updateTaskByEmptyList() {
+    protected void updateTaskByEmptyList() {
         manager.removeAllSubTask();
         manager.removeAllTasks();
         manager.removeAllEpic();
@@ -181,19 +183,19 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void getListOfSubTasksByEpicId() {
+    protected void getListOfSubTasksByEpicId() {
         final List<SubTask> subTasks = manager.getListOfSubTasksByEpicId(2);
         assertEquals(subTasks.size(), 2);
     }
 
     @Test
-    void getListOfSubTasksByEpicIdWithWrongId() {
+    protected void getListOfSubTasksByEpicIdWithWrongId() {
         final List<SubTask> subTasks = manager.getListOfSubTasksByEpicId(3);
         assertEquals(0, subTasks.size());
     }
 
     @Test
-    void getListOfSubTasksByEpicIdTestWithEmptyList() {
+    protected void getListOfSubTasksByEpicIdTestWithEmptyList() {
         manager.removeAllEpic();
         manager.removeAllTasks();
         manager.removeAllSubTask();
@@ -202,18 +204,18 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void getTaskById() {
+    protected void getTaskById() {
         assertNotNull(manager.getTaskById(1));
         assertEquals(task, manager.getTaskById(1));
     }
 
     @Test
-    void getTaskByIdWithWrongId() {
+    protected void getTaskByIdWithWrongId() {
         assertNull(manager.getTaskById(5));
     }
 
     @Test
-    void getTaskByIdWithEmptyList() {
+    protected void getTaskByIdWithEmptyList() {
         manager.removeAllEpic();
         manager.removeAllSubTask();
         manager.removeAllTasks();
@@ -221,18 +223,18 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void getEpicById() {
+    protected void getEpicById() {
         assertNotNull(manager.getEpicById(2));
         assertEquals(epic, manager.getEpicById(2));
     }
 
     @Test
-    void getEpicByIdWithWrongId() {
+    protected void getEpicByIdWithWrongId() {
         assertNull(manager.getEpicById(5));
     }
 
     @Test
-    void getEpicByIdWithEmptyList() {
+    protected void getEpicByIdWithEmptyList() {
         manager.removeAllEpic();
         manager.removeAllSubTask();
         manager.removeAllTasks();
@@ -240,19 +242,19 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void getSubTaskById() {
+    protected void getSubTaskById() {
         assertNotNull(manager.getSubTaskById(3));
         assertEquals(subTask, manager.getSubTaskById(3));
         assertEquals(epic, subTask.getMaster());
     }
 
     @Test
-    void getSubTaskByIdWithWrongId() {
+    protected void getSubTaskByIdWithWrongId() {
         assertNull(manager.getSubTaskById(5));
     }
 
     @Test
-    void getSubTaskByIdWithEmptyList() {
+    protected void getSubTaskByIdWithEmptyList() {
         manager.removeAllEpic();
         manager.removeAllSubTask();
         manager.removeAllTasks();
@@ -260,7 +262,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void getHistory() {
+    protected void getHistory() {
         historyManager.add(task);
         final List<Task> history = historyManager.getHistory();
         assertNotNull(history);
@@ -270,7 +272,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
 
     @Test
-    void getPrioritizedTasksTest() {
+    protected void getPrioritizedTasksTest() {
         var list = manager.getPrioritizedTasks();
         System.out.println(list);
         for (int k = 0; k < list.size(); k++) {
