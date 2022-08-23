@@ -14,15 +14,15 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class HistoryManagerTest {
-    HistoryManager historyManager;
-    TaskManager manager;
+    private HistoryManager historyManager;
+    private TaskManager manager;
     private Epic epic;
     private Task task;
     private SubTask subTask;
 
 
     @BeforeEach
-    private void setUp() {
+    void setUp() {
         historyManager = Managers.getDefaultHistory();
         manager = Managers.getDefault();
         epic = new Epic("Закупиться к новому году", "Ничего не забыть");
@@ -31,7 +31,7 @@ class HistoryManagerTest {
     }
 
     @Test
-    private void add() {
+    void add() {
         historyManager.add(task);
         final List<Task> history = historyManager.getHistory();
         assertNotNull(history);
@@ -39,7 +39,7 @@ class HistoryManagerTest {
     }
 
     @Test
-    private void addTwice() {
+    void addTwice() {
         historyManager.add(task);
         historyManager.add(task);
         final List<Task> history = historyManager.getHistory();
@@ -48,7 +48,7 @@ class HistoryManagerTest {
     }
 
     @Test
-    private void removeFirst() {
+    void removeFirst() {
         manager.addTask(epic);
         manager.addTask(task);
         manager.addTask(subTask);
@@ -67,7 +67,7 @@ class HistoryManagerTest {
     }
 
     @Test
-    private void removeMiddle() {
+    void removeMiddle() {
         manager.addTask(epic);
         manager.addTask(task);
         manager.addTask(subTask);
@@ -86,7 +86,7 @@ class HistoryManagerTest {
     }
 
     @Test
-    private void removeLast() {
+    void removeLast() {
         manager.addTask(epic);
         manager.addTask(task);
         manager.addTask(subTask);
@@ -105,7 +105,7 @@ class HistoryManagerTest {
     }
 
     @Test
-    private void removeOnce() {
+    void removeOnce() {
         manager.addTask(epic);
         historyManager.add(epic);
         List<Task> history = historyManager.getHistory();
@@ -118,7 +118,7 @@ class HistoryManagerTest {
     }
 
     @Test
-    private void getHistory() {
+    void getHistory() {
         final List<Task> history = historyManager.getHistory();
         assertNotNull(history);
         assertTrue(history.isEmpty());

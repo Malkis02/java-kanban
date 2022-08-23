@@ -14,7 +14,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class TaskManagerTest<T extends TaskManager> {
-    HistoryManager historyManager;
+    protected HistoryManager historyManager;
     protected T manager;
     protected Epic epic;
     protected Task task;

@@ -1,7 +1,6 @@
 package test;
 
 import manager.FileBackedTasksManager;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tasks.Task;
@@ -31,6 +30,6 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
         List<Task> taskList = manager.getAllTasks();
         assertNotNull(taskList);
         assertEquals(2, taskList.size());
-        Assertions.assertEquals(task, taskList.get(0));
+        assertEquals(task, taskList.get(0));
     }
 }
