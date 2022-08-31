@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
+
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -38,7 +38,6 @@ public class HttpTaskServer {
     public static void main(String[] args) throws IOException {
         final HttpTaskServer server = new HttpTaskServer();
         server.start();
-//		server.stop();
     }
 
     private void handler(HttpExchange h) {
@@ -111,7 +110,7 @@ public class HttpTaskServer {
                     sendText(h, response);
                     return;
                 }
-                String idParam = query.substring(3);// ?id=
+                String idParam = query.substring(3);
                 final int id = Integer.parseInt(idParam);
                 final Task task = taskManager.getTaskById(id);
                 final String response = gson.toJson(task);
@@ -126,7 +125,7 @@ public class HttpTaskServer {
                     h.sendResponseHeaders(200, 0);
                     return;
                 }
-                String idParam = query.substring(3);// ?id=
+                String idParam = query.substring(3);
                 final int id = Integer.parseInt(idParam);
                 taskManager.removeById(id);
                 System.out.println("Удалили задачу id=" + id);
@@ -140,9 +139,9 @@ public class HttpTaskServer {
                     h.sendResponseHeaders(400, 0);
                     return;
                 }
-                final Task task = gson.fromJson(json, Task.class); //
+                final Task task = gson.fromJson(json, Task.class);
                 final Integer id =  task.getId();
-                if (Objects.nonNull(id)) {
+                if (id!=0) {
                     taskManager.updateTask(id,task);
                     System.out.println("Обновили задачу id=" + id);
                     h.sendResponseHeaders(200, 0);
@@ -167,15 +166,15 @@ public class HttpTaskServer {
         switch (h.getRequestMethod()) {
             case "GET": {
                 if (query == null) {
-                    final List<SubTask> tasks = taskManager.getAllSubtasks();
-                    final String response = gson.toJson(tasks);
+                    final List<SubTask> subtasks = taskManager.getAllSubtasks();
+                    final String response = gson.toJson(subtasks);
                     System.out.println("Получили все подзадачи");
                     sendText(h, response);
                     return;
                 }
                 String idParam = query.substring(3);
                 final int id = Integer.parseInt(idParam);
-                final Task task = taskManager.getSubTaskById(id);
+                final SubTask task = taskManager.getSubTaskById(id);
                 final String response = gson.toJson(task);
                 System.out.println("Получили подзадачу id=" + id);
                 sendText(h, response);
@@ -202,16 +201,16 @@ public class HttpTaskServer {
                     h.sendResponseHeaders(400, 0);
                     return;
                 }
-                final SubTask task = gson.fromJson(json, SubTask.class);
-                final Integer id = task.getId();
-                if (Objects.nonNull(id)) {
-                    taskManager.updateTask(id,task);
+                final SubTask subTask = gson.fromJson(json, SubTask.class);
+                final Integer id = subTask.getId();
+                if (id!=0) {
+                    taskManager.updateTask(id, subTask);
                     System.out.println("Обновили подзадачу id=" + id);
                     h.sendResponseHeaders(200, 0);
                 } else {
-                    taskManager.addTask(task);
+                    taskManager.addTask(subTask);
                     System.out.println("Создали подзадачу id=" + id);
-                    final String response = gson.toJson(task);
+                    final String response = gson.toJson(subTask);
                     sendText(h, response);
                 }
                 break;
@@ -235,10 +234,10 @@ public class HttpTaskServer {
                     sendText(h, response);
                     return;
                 }
-                String idParam = query.substring(3);// ?id=
+                String idParam = query.substring(3);
                 final int id = Integer.parseInt(idParam);
-                final Task task = taskManager.getEpicById(id);
-                final String response = gson.toJson(task);
+                final Epic epic = taskManager.getEpicById(id);
+                final String response = gson.toJson(epic);
                 System.out.println("Получили эпик id=" + id);
                 sendText(h, response);
                 break;
@@ -250,7 +249,7 @@ public class HttpTaskServer {
                     h.sendResponseHeaders(200, 0);
                     return;
                 }
-                String idParam = query.substring(3);// ?id=
+                String idParam = query.substring(3);//
                 final int id = Integer.parseInt(idParam);
                 taskManager.removeById(id);
                 System.out.println("Удалили эпик id=" + id);
@@ -264,16 +263,16 @@ public class HttpTaskServer {
                     h.sendResponseHeaders(400, 0);
                     return;
                 }
-                final Epic task = gson.fromJson(json, Epic.class); //
-                final Integer id = task.getId();
-                if (id != null) {
-                    taskManager.updateTask(id,task);
+                final Epic epic = gson.fromJson(json, Epic.class);
+                final Integer id = epic.getId();
+                if (id!=0) {
+                    taskManager.updateTask(id, epic);
                     System.out.println("Обновили эпик id=" + id);
                     h.sendResponseHeaders(200, 0);
                 } else {
-                    taskManager.addTask(task);
+                    taskManager.addTask(epic);
                     System.out.println("Создали эпик id=" + id);
-                    final String response = gson.toJson(task);
+                    final String response = gson.toJson(epic);
                     sendText(h, response);
                 }
                 break;

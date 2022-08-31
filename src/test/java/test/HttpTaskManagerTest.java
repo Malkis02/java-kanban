@@ -1,5 +1,7 @@
-package manager;
+package test;
 
+import manager.HttpTaskManager;
+import manager.Managers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,20 +14,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager> {
 
-    private KVServer kvServer;
+
 
     @BeforeEach
     void setUp() throws IOException {
-        manager = new HttpTaskManager(KVServer.PORT);
         kvServer = Managers.getDefaultKVServer();
+        manager = new HttpTaskManager(KVServer.PORT);
         setUpTaskManager();
-        kvServer.start();
     }
 
-    @AfterEach
-    void tearDown() {
-        kvServer.stop();
-    }
+
 
     @Test
     protected void load(){

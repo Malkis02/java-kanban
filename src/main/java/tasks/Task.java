@@ -81,7 +81,7 @@ public class Task implements Comparable {
         this.description = description;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 

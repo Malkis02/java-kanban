@@ -34,7 +34,8 @@ public class KVServer {
         try {
             System.out.println("\n/load");
             if ("GET".equals(h.getRequestMethod())) {
-                sendHashMap(h, data);
+                String key = h.getRequestURI().getPath().substring("/save/".length());
+                sendText(h, data.get(key));
             } else {
                 System.out.println("/load ждёт GET-запрос, а получил " + h.getRequestMethod());
                 h.sendResponseHeaders(405, 0);
@@ -55,7 +56,7 @@ public class KVServer {
                 return;
             }
             if ("POST".equals(h.getRequestMethod())) {
-                String key = h.getRequestURI().getPath().substring("/save/".length());
+                String key = h.getRequestURI().getPath().substring("save/".length());
                 if (key.isEmpty()) {
                     System.out.println("Key для сохранения пустой. key указывается в пути: /save/{key}");
                     h.sendResponseHeaders(400, 0);
@@ -123,14 +124,5 @@ public class KVServer {
         h.getResponseHeaders().add("Content-Type", "application/json");
         h.sendResponseHeaders(200, resp.length);
         h.getResponseBody().write(resp);
-    }
-
-    protected void sendHashMap(HttpExchange h,Map<String,String> data) throws IOException {
-            String str = data.values().toString();
-            byte[] resp = str.getBytes(UTF_8);
-            h.getResponseHeaders().add("Content-Type","application/json");
-            h.sendResponseHeaders(200,resp.length);
-            h.getResponseBody().write(resp);
-
     }
 }

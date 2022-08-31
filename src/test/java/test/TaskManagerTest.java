@@ -3,18 +3,24 @@ package test;
 import manager.HistoryManager;
 import manager.Managers;
 import manager.TaskManager;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import server.HttpTaskServer;
+import server.KVServer;
 import tasks.Epic;
 import tasks.SubTask;
 import tasks.Task;
 import tasks.TaskStatus;
 
+import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class TaskManagerTest<T extends TaskManager> {
     protected HistoryManager historyManager;
+    private HttpTaskServer taskServer;
+    protected KVServer kvServer;
     protected T manager;
     protected Epic epic;
     protected Task task;
@@ -22,8 +28,10 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     private SubTask subTask1;
 
 
-    protected void setUpTaskManager() {
+    protected void setUpTaskManager() throws IOException {
+        taskServer = new HttpTaskServer(manager);
         historyManager = Managers.getDefaultHistory();
+        kvServer = Managers.getDefaultKVServer();
         task = new Task("Выгулять собаку", "Погулять в парке", "2022-08-05T20:15", 45);
         manager.addTask(task);
         epic = new Epic("Закупиться к новому году", "Ничего не забыть");
@@ -32,6 +40,14 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         manager.addTask(subTask);
         subTask1 = new SubTask("Купить подарки", "Закупки", epic, "2022-08-04T21:10", 90);
         manager.addTask(subTask1);
+        taskServer.start();
+        kvServer.start();
+    }
+
+    @AfterEach
+    void stop() {
+        taskServer.stop();
+        kvServer.stop();
     }
 
     @Test
@@ -134,6 +150,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(0, listOfSubTasks.size());
         assertEquals(1, listOfEpic.size());
         assertNotNull(subTask.getMaster());
+        assertEquals(TaskStatus.NEW,epic.getStatus());
     }
 
     @Test

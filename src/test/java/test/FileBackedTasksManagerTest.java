@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import tasks.Task;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,7 +16,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
 
 
     @BeforeEach
-    private void setUp() {
+    private void setUp() throws IOException {
         String file;
         file = "src\\test\\data.csv";
         manager = new FileBackedTasksManager(file);
