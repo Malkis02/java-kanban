@@ -75,7 +75,7 @@ public class HttpTaskServer {
                         h.sendResponseHeaders(405, 0);
                     }
                     final String query = h.getRequestURI().getQuery();
-                    String idParam = query.substring(3);// ?id=
+                    String idParam = query.substring(3);
                     final int id = Integer.parseInt(idParam);
                     final List<SubTask> subtasks = taskManager.getListOfSubTasksByEpicId(id);
                     final String response = gson.toJson(subtasks);

@@ -1,5 +1,6 @@
 package test;
 
+import client.KVTaskClient;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import manager.HistoryManager;
@@ -44,16 +45,17 @@ class HttpTaskServerTest {
         taskManager = new InMemoryTaskManager();
         taskServer = new HttpTaskServer(taskManager);
 
-        task = new Task("Test Task", "Test Task description","2022-08-04T20:15",15);
-        taskManager.addTask(task);
+        task = new Task("Выгулять собаку", "Погулять в парке","2022-08-03T20:15",45);
 
-        epic = new Epic("Test Epic", "Test Epic description");
+        subtask = new SubTask("Купить продукты", "Закупки", epic,"2022-08-04T20:10",60);
+
+        epic = new Epic("Закупиться к новому году", "Ничего не забыть");
+
+
+        taskManager.addTask(task);
+        taskManager.addTask(subtask);
         taskManager.addTask(epic);
 
-        subtask = new SubTask("Test Subtask", "Test Subtask description",
-                epic,"2022-08-04T20:15",50);
-
-        taskManager.addTask(subtask);
 
         taskServer.start();
     }
@@ -116,11 +118,13 @@ class HttpTaskServerTest {
 
     @Test
     void getEpicSubtasks() throws IOException, InterruptedException {
+        System.out.println(subtask.getMaster());
         HttpClient client = HttpClient.newHttpClient();
         URI url = URI.create("http://localhost:8080/tasks/subtask/epic?id=" + epic.getId());
         HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertEquals(200, response.statusCode());
+
 
         final List<SubTask> tasks = gson.fromJson(response.body(),
                 new TypeToken<ArrayList<SubTask>>() {
@@ -268,7 +272,7 @@ class HttpTaskServerTest {
 
     @Test
     void epicWithNewSubtasks() {
-        final LocalDateTime endTime = getLastEndTime();
+        final LocalDateTime endTime = LocalDateTime.now();
         Epic epic = new Epic("Empty epic", "Test epic description");
         taskManager.addTask(epic);
         final int epicId = epic.getId();
@@ -328,6 +332,7 @@ class HttpTaskServerTest {
 
     @Test
     void updateSubtask() {
+        epic.addSub(subtask);
         subtask.setStatus(TaskStatus.IN_PROGRESS);
         subtask.setName("Update updateEpic");
         subtask.setDescription("Update updateEpic description");
@@ -338,6 +343,7 @@ class HttpTaskServerTest {
         assertEquals(subtask, savedTask, "Эпик не совпадают");
 
         final Epic savedEpic = savedTask.getMaster();
+
         assertNotNull(savedEpic, "Эпик подзадачи не найден");
     }
 
@@ -355,7 +361,7 @@ class HttpTaskServerTest {
 
     @Test
     void deleteEpic() {
-        taskManager.removeById(epic.getId());
+        taskManager.removeAllEpic();
 
         final Task savedEpic = taskManager.getEpicById(epic.getId());
         assertNull(savedEpic, "Эпика нет после удаления");
@@ -368,13 +374,16 @@ class HttpTaskServerTest {
         assertTrue(epicSubtasks.isEmpty(), "Подзадач нет после удаления эпика");
 
         final List<SubTask> subtasks = taskManager.getAllSubtasks();
+        System.out.println(subtasks);
         assertNotNull(subtasks, "Подзадач нет после удаления эпика");
         assertTrue(subtasks.isEmpty(), "Подзадач нет после удаления эпика");
     }
 
     @Test
     void deleteSubtask() {
+        epic.addSub(subtask);
         taskManager.removeById(subtask.getId());
+
 
         final SubTask savedSubtask = taskManager.getSubTaskById(subtask.getId());
         assertNull(savedSubtask, "Подзадач нет после удаления");
@@ -439,23 +448,24 @@ class HttpTaskServerTest {
 
         List<Task> tasks = gson.fromJson(response.body(), new TypeToken<ArrayList<Task>>() {
         }.getType());
+        System.out.println(tasks);
         assertNotNull(tasks, "Задачи в порядке приоритета возвращаются");
-        assertEquals(2, tasks.size(), "Все задачи в порядке приоритета кроме эпика");
-        assertEquals(task.getId(), tasks.get(0).getId(), "Первая - обычная задача");
+        assertEquals(3, tasks.size(), "Все задачи в порядке приоритета кроме эпика");
+        assertEquals(task.getId(), tasks.get(0).getId(), "Первая -  обычная задача");
         assertEquals(subtask.getId(), tasks.get(1).getId(), "Вторая - подзадача");
 
         Task updateTask = new Task("Test addNewTask", "Test addNewTask description",
                 LocalDateTime.now().toString(), 45);
         updateTask.setStartTime(subtask.getEndTime());
-        taskManager.updateTask(8,updateTask);
+        taskManager.updateTask(1,updateTask);
 
         response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertEquals(200, response.statusCode());
         tasks = gson.fromJson(response.body(), new TypeToken<ArrayList<Task>>() {
         }.getType());
-
+        System.out.println(tasks);
         assertNotNull(tasks, "Задачи в порядке приоритета возвращаются");
-        assertEquals(2, tasks.size(), "Все задачи в порядке приоритета");
+        assertEquals(3, tasks.size(), "Все задачи в порядке приоритета");
         assertEquals(subtask.getId(), tasks.get(0).getId(), "Первая - подзадача");
         assertEquals(task.getId(), tasks.get(1).getId(), "Второй  - задача");
     }

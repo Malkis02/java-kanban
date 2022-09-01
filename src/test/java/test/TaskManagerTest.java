@@ -1,5 +1,6 @@
 package test;
 
+import com.google.gson.Gson;
 import manager.HistoryManager;
 import manager.Managers;
 import manager.TaskManager;
@@ -24,14 +25,15 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     protected T manager;
     protected Epic epic;
     protected Task task;
+    protected Gson gson;
     protected SubTask subTask;
     private SubTask subTask1;
 
 
     protected void setUpTaskManager() throws IOException {
+        kvServer = Managers.getDefaultKVServer();
         taskServer = new HttpTaskServer(manager);
         historyManager = Managers.getDefaultHistory();
-        kvServer = Managers.getDefaultKVServer();
         task = new Task("Выгулять собаку", "Погулять в парке", "2022-08-05T20:15", 45);
         manager.addTask(task);
         epic = new Epic("Закупиться к новому году", "Ничего не забыть");
@@ -41,7 +43,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         subTask1 = new SubTask("Купить подарки", "Закупки", epic, "2022-08-04T21:10", 90);
         manager.addTask(subTask1);
         taskServer.start();
-        kvServer.start();
+
     }
 
     @AfterEach
@@ -49,6 +51,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         taskServer.stop();
         kvServer.stop();
     }
+
+
 
     @Test
     protected void getAllTasks() {

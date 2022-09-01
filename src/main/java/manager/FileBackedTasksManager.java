@@ -1,5 +1,7 @@
 package manager;
 
+
+import server.KVServer;
 import tasks.*;
 
 import java.io.*;
@@ -119,9 +121,11 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return result;
     }
 
-    public static void main(String[] args) {
-        TaskManager manager = Managers.getDefault();
-
+    public static void main(String[] args) throws IOException {
+        TaskManager manager;
+        KVServer kvServer = Managers.getDefaultKVServer();
+        kvServer.start();
+        manager = new HttpTaskManager(KVServer.PORT);
         Task task = new Task("Выгулять собаку", "Погулять в парке","2022-08-04T20:15",45);
         Task task2 = new Task("Позвонить маме", "Попросить рецепт торта","2022-08-04T22:10",60);
         Epic epic = new Epic("Закупиться к новому году", "Ничего не забыть");
@@ -179,6 +183,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         fbNew.save();
     }
 
+
+
+
     public boolean isRestored() {
         return restored;
     }
@@ -210,6 +217,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         }
 
     }
+
+
 
     @Override
     public void addTask(Task task) {
