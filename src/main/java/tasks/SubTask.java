@@ -12,19 +12,18 @@ public class SubTask extends Task {
         if (!super.equals(o))
             return false;
         SubTask subTask = (SubTask) o;
-        return Objects.equals(master, subTask.master);
+        return Objects.equals(masterId, subTask.masterId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), master);
+        return Objects.hash(super.hashCode(), masterId);
     }
 
-    private Epic master;
     static TaskTypeName typeName = TaskTypeName.SUBTASK;
-    private int masterId;
+    private Integer masterId;
 
-    public int getMasterId() {
+    public Integer getMasterId() {
         return masterId;
     }
 
@@ -34,11 +33,10 @@ public class SubTask extends Task {
 
 
 
-    public SubTask(String n, String d, Epic e,String startdt,int durmin) {
+    public SubTask(String n, String d, Integer mId,String startdt,int durmin) {
         super(n, d,startdt,durmin);
-        if(e!=null){
-            e.addSub(this);
-            master = e;
+        if(mId!=null){
+            masterId = mId;
         }
     }
     @Override
@@ -46,24 +44,17 @@ public class SubTask extends Task {
         return typeName.toString();
     }
 
-    public Epic getMaster() {
-        return master;
-    }
-
-    public void setMaster(Epic master) {
-        this.master = master;
-    }
     @Override
     public String toString() {
         String s = super.toString();
-        return String.format("%s master=%s",s,master == null ? "null":master.getName());
+        return String.format("%s masterId=%s",s,masterId == null ? "null":masterId);
     }
     @Override
     public String toFileString(){
         String s = super.toFileString();
         s+=",";
-        System.out.println(this.getName() + ": " + master);
-        s+= master.getId();
+        System.out.println(this.getName() + ": " + masterId);
+        s+= masterId;
         return s;
     }
 

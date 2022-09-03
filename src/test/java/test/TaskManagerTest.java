@@ -1,12 +1,9 @@
 package test;
 
-import com.google.gson.Gson;
 import manager.HistoryManager;
 import manager.Managers;
 import manager.TaskManager;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import server.HttpTaskServer;
 import server.KVServer;
 import tasks.Epic;
 import tasks.SubTask;
@@ -20,36 +17,27 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class TaskManagerTest<T extends TaskManager> {
     protected HistoryManager historyManager;
-    private HttpTaskServer taskServer;
     protected KVServer kvServer;
     protected T manager;
     protected Epic epic;
     protected Task task;
-    protected Gson gson;
     protected SubTask subTask;
-    private SubTask subTask1;
+    protected SubTask subTask1;
 
 
     protected void setUpTaskManager() throws IOException {
-        kvServer = Managers.getDefaultKVServer();
-        taskServer = new HttpTaskServer(manager);
         historyManager = Managers.getDefaultHistory();
         task = new Task("Выгулять собаку", "Погулять в парке", "2022-08-05T20:15", 45);
         manager.addTask(task);
         epic = new Epic("Закупиться к новому году", "Ничего не забыть");
         manager.addTask(epic);
-        subTask = new SubTask("Купить продукты", "Закупки", epic, "2022-08-04T20:10", 60);
+        subTask = new SubTask("Купить продукты", "Закупки", epic.getId(), "2022-08-04T20:10", 60);
         manager.addTask(subTask);
-        subTask1 = new SubTask("Купить подарки", "Закупки", epic, "2022-08-04T21:10", 90);
+        subTask1 = new SubTask("Купить подарки", "Закупки", epic.getId(), "2022-08-04T21:10", 90);
         manager.addTask(subTask1);
-        taskServer.start();
+        epic.addSub(subTask);
+        epic.addSub(subTask1);
 
-    }
-
-    @AfterEach
-    void stop() {
-        taskServer.stop();
-        kvServer.stop();
     }
 
 
@@ -68,8 +56,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(2, listOfSubTasks.size());
         assertEquals(subTask, listOfSubTasks.get(0));
         assertEquals(subTask1, listOfSubTasks.get(1));
-        assertEquals(subTask.getMaster(), epic);
-        assertEquals(subTask1.getMaster(), epic);
+        assertEquals(subTask.getMasterId(), epic.getId());
+        assertEquals(subTask1.getMasterId(), epic.getId());
     }
 
     @Test
@@ -153,7 +141,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         List<Epic> listOfEpic = manager.getAllEpic();
         assertEquals(0, listOfSubTasks.size());
         assertEquals(1, listOfEpic.size());
-        assertNotNull(subTask.getMaster());
+        assertNotNull(subTask.getMasterId());
         assertEquals(TaskStatus.NEW,epic.getStatus());
     }
 
@@ -266,7 +254,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     protected void getSubTaskById() {
         assertNotNull(manager.getSubTaskById(3));
         assertEquals(subTask, manager.getSubTaskById(3));
-        assertEquals(epic, subTask.getMaster());
+        assertEquals(epic, manager.getEpicById(subTask.getMasterId()));
     }
 
     @Test

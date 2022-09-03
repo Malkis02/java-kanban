@@ -64,7 +64,7 @@ public class InMemoryTaskManager implements TaskManager {
             return true;
         } else if (subtaskById.containsKey(id)) {
             SubTask sb = subtaskById.get(id);
-            Epic ep = sb.getMaster();
+            Epic ep = epicsById.get(sb.getMasterId());
             List<SubTask> subs = ep.getSubs();
             subs.remove(sb);
             taskSet.remove(sb);

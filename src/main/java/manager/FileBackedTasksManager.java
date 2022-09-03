@@ -26,7 +26,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         } else if (w[1].equals(TaskTypeName.EPIC.toString())) {
             t = new Epic(w[2], w[4]);
         } else if (w[1].equals(TaskTypeName.SUBTASK.toString())) {
-            t = new SubTask(w[2], w[4], null,w[5],Integer.parseInt(w[6]));
+            t = new SubTask(w[2], w[4], Integer.valueOf(w[7]),w[5],Integer.parseInt(w[6]));
             ((SubTask) t).setMasterId(Integer.parseInt(w[7]));
         } else {
             System.out.format("Wrong type name");
@@ -124,14 +124,13 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     public static void main(String[] args) throws IOException {
         TaskManager manager;
         KVServer kvServer = Managers.getDefaultKVServer();
-        kvServer.start();
         manager = new HttpTaskManager(KVServer.PORT);
         Task task = new Task("Выгулять собаку", "Погулять в парке","2022-08-04T20:15",45);
         Task task2 = new Task("Позвонить маме", "Попросить рецепт торта","2022-08-04T22:10",60);
         Epic epic = new Epic("Закупиться к новому году", "Ничего не забыть");
-        SubTask subTask = new SubTask("Купить продукты", "Закупки", epic,"2022-08-04T20:10",60);
-        SubTask subTask1 = new SubTask("Купить подарки", "Закупки", epic,"2022-08-04T21:10",90);
-        SubTask subTask2 = new SubTask("Купить фейерверк", "Закупки", epic,"2022-08-04T22:10",10);
+        SubTask subTask = new SubTask("Купить продукты", "Закупки", epic.getId(),"2022-08-04T20:10",60);
+        SubTask subTask1 = new SubTask("Купить подарки", "Закупки", epic.getId(),"2022-08-04T21:10",90);
+        SubTask subTask2 = new SubTask("Купить фейерверк", "Закупки", epic.getId(),"2022-08-04T22:10",10);
         Epic epic1 = new Epic("Устроить детский праздник", "Для племянника");
         System.out.println(Arrays.toString(manager.getHistory().toArray()));
         manager.addTask(task);
@@ -183,9 +182,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         fbNew.save();
     }
 
-
-
-
     public boolean isRestored() {
         return restored;
     }
@@ -197,7 +193,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     public void save() {
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(String.format("%s", fileName)));
-            bw.write("id,type,name,status,description,epic\n");
+            bw.write("id,type,name,status,description,epicId\n");
             for (int i = 0; i < 10; i++) {
                 if (tasksById.containsKey(i)) {
                     bw.write(String.format("%s\n", tasksById.get(i).toFileString()));

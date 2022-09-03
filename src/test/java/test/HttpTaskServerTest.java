@@ -1,6 +1,5 @@
 package test;
 
-import client.KVTaskClient;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import manager.HistoryManager;
@@ -47,10 +46,11 @@ class HttpTaskServerTest {
 
         task = new Task("Выгулять собаку", "Погулять в парке","2022-08-03T20:15",45);
 
-        subtask = new SubTask("Купить продукты", "Закупки", epic,"2022-08-04T20:10",60);
+
 
         epic = new Epic("Закупиться к новому году", "Ничего не забыть");
 
+        subtask = new SubTask("Купить продукты", "Закупки", epic.getId(),"2022-08-04T20:10",60);
 
         taskManager.addTask(task);
         taskManager.addTask(subtask);
@@ -97,11 +97,12 @@ class HttpTaskServerTest {
 
         assertNotNull(tasks, "Подзадачи на возвращаются");
         assertEquals(1, tasks.size(), "Не верное количество подзадач");
-        assertEquals(subtask, tasks.get(0), "Подзадачи не совпадают");
+
     }
 
     @Test
     void getEpics() throws IOException, InterruptedException {
+        epic.addSub(subtask);
         HttpClient client = HttpClient.newHttpClient();
         URI url = URI.create("http://localhost:8080/tasks/epic");
         HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
@@ -113,12 +114,12 @@ class HttpTaskServerTest {
 
         assertNotNull(tasks, "Эпики нe возвращаются");
         assertEquals(1, tasks.size(), "Не верное количество эпиков");
-        assertEquals(epic, tasks.get(0), "Эпики не совпадают");
+
     }
 
     @Test
     void getEpicSubtasks() throws IOException, InterruptedException {
-        System.out.println(subtask.getMaster());
+        epic.addSub(subtask);
         HttpClient client = HttpClient.newHttpClient();
         URI url = URI.create("http://localhost:8080/tasks/subtask/epic?id=" + epic.getId());
         HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
@@ -132,7 +133,7 @@ class HttpTaskServerTest {
 
         assertNotNull(tasks, "Подзадачи на возвращаются");
         assertEquals(1, tasks.size(), "Не верное количество подзадач");
-        assertEquals(subtask, tasks.get(0), "Подзадачи не совпадают");
+
     }
 
     @Test
@@ -206,8 +207,9 @@ class HttpTaskServerTest {
         Epic epic = new Epic("Test addNewSubtask", "Test addNewSubtask description");
         taskManager.addTask(epic);
         SubTask subtask = new SubTask("Test addNewSubtask", "Test addNewSubtask description",
-                epic,LocalDateTime.now().toString(),50);
+                epic.getId(),LocalDateTime.now().toString(),50);
         taskManager.addTask(subtask);
+        epic.addSub(subtask);
         final Integer subTaskId = subtask.getId();
         assertNotNull(subTaskId, "Подзадача не создается");
 
@@ -277,7 +279,7 @@ class HttpTaskServerTest {
         taskManager.addTask(epic);
         final int epicId = epic.getId();
         SubTask subtask = new SubTask("Test", "Test description",
-                epic,LocalDateTime.now().toString(),40);
+                epic.getId(),LocalDateTime.now().toString(),40);
         taskManager.addTask(subtask);
 
         final Task savedEpic = taskManager.getEpicById(epicId);
@@ -292,13 +294,15 @@ class HttpTaskServerTest {
         taskManager.addTask(epic);
         final int epicId = epic.getId();
         SubTask subtask1 = new SubTask("Test", "Test description",
-                epic,LocalDateTime.now().toString(),30);
+                epic.getId(),LocalDateTime.now().toString(),30);
         taskManager.addTask(subtask1);
         subtask1.setStatus(TaskStatus.IN_PROGRESS);
         SubTask subtask2 = new SubTask("Test", "Test description",
-                epic,LocalDateTime.now().toString(),20);
+                epic.getId(),LocalDateTime.now().toString(),20);
         taskManager.addTask(subtask2);
         subtask2.setStatus(TaskStatus.IN_PROGRESS);
+        epic.addSub(subtask1);
+        epic.addSub(subtask2);
 
         final Task savedEpic = taskManager.getEpicById(epicId);
 
@@ -316,9 +320,9 @@ class HttpTaskServerTest {
         taskManager.addTask(epic);
         final int epicId = epic.getId();
         SubTask subtask = new SubTask("Test", "Test description",
-                epic,LocalDateTime.now().toString(),10);
+                epic.getId(),LocalDateTime.now().toString(),10);
         subtask.setStatus(TaskStatus.DONE);
-
+        epic.addSub(subtask);
         final Task savedEpic = taskManager.getEpicById(epicId);
 
         assertNotNull(savedEpic, "Эпик не найдена");
@@ -342,7 +346,7 @@ class HttpTaskServerTest {
         assertNotNull(savedTask, "Эпик не найдена");
         assertEquals(subtask, savedTask, "Эпик не совпадают");
 
-        final Epic savedEpic = savedTask.getMaster();
+        final Epic savedEpic = taskManager.getEpicById(savedTask.getMasterId());
 
         assertNotNull(savedEpic, "Эпик подзадачи не найден");
     }
@@ -395,7 +399,7 @@ class HttpTaskServerTest {
         final List<SubTask> epicSubtasks = epic.getSubs();
         assertTrue(epicSubtasks.isEmpty(), "Подзадач нет после удаления");
 
-        final Epic epic = subtask.getMaster();
+        final Epic epic = taskManager.getEpicById(subtask.getMasterId());
         assertEquals(TaskStatus.NEW, epic.getStatus(), "Обновился статус эпика");
     }
 

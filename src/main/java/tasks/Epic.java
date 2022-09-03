@@ -34,7 +34,7 @@ public class Epic extends Task {
         return Objects.hash(super.hashCode(), subs);
     }
 
-    private List<SubTask> subs = new ArrayList<>();
+    transient private List<SubTask> subs = new ArrayList<>();
 
     public Epic(String n, String d) {
         super(n, d,null,0);
@@ -59,10 +59,10 @@ public class Epic extends Task {
         if (sb == null || subs.contains(sb)) {
             return;
         }
-        if(sb.getMaster()!=null){
-           var oldMaster = sb.getMaster();
-           oldMaster.subs.remove(sb);
-           oldMaster.calculateDuration();
+        if(sb.getMasterId()!=null){
+           var oldMasterId = sb.getMasterId();
+          // oldMaster.subs.remove(sb);
+          // oldMaster.calculateDuration();
         }
       /*  if(subs.size()==0){
             startTime = sb.getStartTime();
@@ -81,7 +81,7 @@ public class Epic extends Task {
 
        */
         subs.add(sb);
-        sb.setMaster(this);
+        sb.setMasterId(this.getId());
         calculateDuration();
     }
 

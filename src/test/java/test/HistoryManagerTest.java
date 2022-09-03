@@ -4,11 +4,10 @@ import manager.HistoryManager;
 import manager.InMemoryTaskManager;
 import manager.Managers;
 import manager.TaskManager;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import server.HttpTaskServer;
+import server.KVServer;
 import tasks.Epic;
 import tasks.SubTask;
 import tasks.Task;
@@ -21,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class HistoryManagerTest {
     private HistoryManager historyManager;
     private TaskManager manager;
-    private HttpTaskServer server;
+    private KVServer server;
     private Epic epic;
     private Task task;
     private SubTask subTask;
@@ -31,12 +30,13 @@ class HistoryManagerTest {
     void setUp() throws IOException {
         historyManager = Managers.getDefaultHistory();
         manager =  new InMemoryTaskManager();
-        server = new HttpTaskServer(manager);
-        epic = new Epic("Закупиться к новому году", "Ничего не забыть");
-        subTask = new SubTask("Купить продукты", "Закупки", epic, "2022-08-04T20:10", 60);
-        task = new Task("Выгулять собаку", "Погулять в парке", "2022-08-04T20:15", 45);
+        server = Managers.getDefaultKVServer();
         server.start();
+        epic = new Epic("Закупиться к новому году", "Ничего не забыть");
+        subTask = new SubTask("Купить продукты", "Закупки", epic.getId(), "2022-08-04T20:10", 60);
+        task = new Task("Выгулять собаку", "Погулять в парке", "2022-08-04T20:15", 45);
     }
+
     @AfterEach
     void stop() {
         server.stop();

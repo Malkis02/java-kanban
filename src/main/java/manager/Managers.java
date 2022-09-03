@@ -1,10 +1,8 @@
 package manager;
 
 import adapters.LocalDateTimeAdapter;
-import client.KVTaskClient;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import server.HttpTaskServer;
 import server.KVServer;
 
 import java.io.IOException;
@@ -19,9 +17,7 @@ public class Managers {
         return new InMemoryHistoryManager();
     }
     public static KVServer getDefaultKVServer() throws IOException {
-        KVServer kvServer = new KVServer();
-        kvServer.start();
-        return kvServer;
+        return new KVServer();
     }
     public static Gson getGson(){
         GsonBuilder gsonBuilder = new GsonBuilder();
