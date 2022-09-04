@@ -120,11 +120,11 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
         return result;
     }
-
+/*
     public static void main(String[] args) throws IOException {
         TaskManager manager;
         KVServer kvServer = Managers.getDefaultKVServer();
-        manager = new HttpTaskManager(KVServer.PORT);
+        manager = Managers.getDefault();
         Task task = new Task("Выгулять собаку", "Погулять в парке","2022-08-04T20:15",45);
         Task task2 = new Task("Позвонить маме", "Попросить рецепт торта","2022-08-04T22:10",60);
         Epic epic = new Epic("Закупиться к новому году", "Ничего не забыть");
@@ -180,7 +180,11 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         var fbNew = FileBackedTasksManager.loadFromFile
                 (new File("data_next.csv"));
         fbNew.save();
+
+
     }
+
+ */
 
     public boolean isRestored() {
         return restored;
@@ -263,6 +267,20 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         var x = super.removeById(id);
         save();
         return x;
+    }
+
+    protected Task findTask(Integer id){
+        final Task task = tasksById.get(id);
+        if(task!=null){
+            return task;
+        }
+
+        final SubTask subTask = subtaskById.get(id);
+        if (subTask!=null){
+            return subTask;
+        }
+
+        return epicsById.get(id);
     }
 
 }

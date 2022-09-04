@@ -16,8 +16,15 @@ public class HttpTaskManager extends FileBackedTasksManager {
 
     private KVTaskClient client;
     private final Gson gson;
-    private int generatedId = 0;
 
+    public HttpTaskManager(int port,boolean isLoad){
+        super("data.csv");
+        gson = Managers.getGson();
+        client = new KVTaskClient(port);
+        if(isLoad){
+            load();
+        }
+    }
 
     public HttpTaskManager(int port) {
         super(null);
@@ -46,50 +53,50 @@ public class HttpTaskManager extends FileBackedTasksManager {
         Type tasksType = new TypeToken<ArrayList<Task>>() {
         }.getType();
 
-        ArrayList<Task> tasks = gson.fromJson(client.load("tasks"), tasksType);
+        ArrayList<Task> tasks = gson.fromJson(client.load("/tasks"), tasksType);
         tasks.forEach(task -> {
             int id = task.getId();
             this.tasksById.put(id, task);
             this.taskSet.add(task);
-            if (id > generatedId) {
-                generatedId = id;
+            if (id > nextId) {
+                nextId = id;
             }
 
         });
 
-        Type epicsType = new TypeToken<ArrayList<Task>>() {
+        Type epicsType = new TypeToken<ArrayList<Epic>>() {
         }.getType();
 
-        ArrayList<Epic> epics = gson.fromJson(client.load("epics"), epicsType);
+        ArrayList<Epic> epics = gson.fromJson(client.load("/epics"), epicsType);
         epics.forEach(epic -> {
             int id = epic.getId();
             this.epicsById.put(id, epic);
             this.taskSet.add(epic);
-            if (id > generatedId) {
-                generatedId = id;
+            if (id > nextId) {
+                nextId = id;
             }
 
         });
 
-        Type subtasksType = new TypeToken<ArrayList<Task>>() {
+        Type subtasksType = new TypeToken<ArrayList<SubTask>>() {
         }.getType();
 
-        ArrayList<SubTask> subtasks = gson.fromJson(client.load("subtasks"), subtasksType);
+        ArrayList<SubTask> subtasks = gson.fromJson(client.load("/subtasks"), subtasksType);
         subtasks.forEach(subtask -> {
             int id = subtask.getId();
             this.subtaskById.put(id,subtask);
             this.taskSet.add(subtask);
-            if (id > generatedId) {
-                generatedId = id;
+            if (id > nextId) {
+                nextId = id;
             }
 
         });
 
-        Type historyType = new TypeToken<ArrayList<Task>>() {
+        Type historyType = new TypeToken<ArrayList<Integer>>() {
         }.getType();
-        ArrayList<Integer> history = gson.fromJson(client.load("history"), historyType);
-        for (Integer taskId : history) {
-            historyManager.add(this.getTaskById(taskId));
+        ArrayList<Integer> history = gson.fromJson(client.load("/history"), historyType);
+        for (Integer id : history) {
+            historyManager.add(this.findTask(id));
         }
     }
 

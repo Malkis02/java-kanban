@@ -1,5 +1,6 @@
 package client;
 
+import manager.ManagerLoadException;
 import manager.ManagerSaveException;
 
 import java.io.IOException;
@@ -41,16 +42,16 @@ public class KVTaskClient {
         try {
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(url + "/load" + key + apiToken)).GET().build();
+                    .uri(URI.create(url + "/load/" + key + "?API_TOKEN=" + apiToken)).GET().build();
             HttpResponse<String> response = client.send(request,
                     HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() != 200) {
-                throw new ManagerSaveException();
+                throw new ManagerLoadException();
             }
             return response.body();
-        } catch (Exception e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
-            throw new ManagerSaveException();
+            throw new ManagerLoadException();
 
         }
     }
@@ -60,7 +61,7 @@ public class KVTaskClient {
         try {
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(url + "/save" + key + "?API_TOKEN=" + apiToken))
+                    .uri(URI.create(url + "/save/" + key + "?API_TOKEN=" + apiToken))
                     .POST(HttpRequest.BodyPublishers.ofString(value))
                     .build();
             HttpResponse<Void> response = client.send(request, HttpResponse.BodyHandlers.discarding());
