@@ -61,6 +61,7 @@ public class Epic extends Task {
         }
         if(sb.getMasterId()!=null){
            var oldMasterId = sb.getMasterId();
+
           // oldMaster.subs.remove(sb);
           // oldMaster.calculateDuration();
         }
@@ -91,7 +92,7 @@ public class Epic extends Task {
 
     @Override
     public TaskStatus getStatus() {
-        if (subs.size() == 0) {
+        if (subs==null) {
             return TaskStatus.NEW;
         }
         int totalNew = 0;
